@@ -47,6 +47,8 @@ namespace BankSystem.Domain.Entities
             {
                 throw new InvalidOperationException("この口座は既に解約されています。");
             }
+
+            Status = 3;
         }
 
     }

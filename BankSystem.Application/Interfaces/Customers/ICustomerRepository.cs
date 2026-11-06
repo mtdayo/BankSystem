@@ -21,5 +21,9 @@ namespace BankSystem.Application.Interfaces.Customers
         Task UpdateAccountsAsync(List<Account> accounts);
 
         Task UpdateCustomerAsync(Customer customer);
+
+        Task SaveChangesAsync();
+
+        Task<bool> ExistsByCustomerNumberAsync(string customerNumber);
     }
 }

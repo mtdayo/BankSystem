@@ -16,5 +16,7 @@ namespace BankSystem.Application.Interfaces.Customers
         Task<CustomerDto> CreateAsync(CustomerCreateRequest request);
 
         Task<CustomerDto?> UpdateAsync(int customerId, CustomerUpdateRequest request);
+
+        Task<bool> DeleteAsync(int customerId);
     }
 }

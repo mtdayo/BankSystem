@@ -21,12 +21,14 @@ namespace BankSystem.Infrastructure.Repositories
         public async Task<List<Customer>> GetAllAsync()
         {
             return await _db.Customers.AsNoTracking()
+                                      .Where(c => !c.IsDeleted)
                                       .ToListAsync();
         }
 
         public async Task<Customer?> GetByIdAsync(int customerId)
         {
             return await _db.Customers.AsNoTracking()
+                                      .Where(c => !c.IsDeleted)
                                       .FirstOrDefaultAsync(c => c.CustomerId == customerId);
         }
         public async Task AddAsync(Customer customer)
@@ -35,10 +37,10 @@ namespace BankSystem.Infrastructure.Repositories
             await _db.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Customer customer)
+        public Task UpdateAsync(Customer customer)
         {
             _db.Customers.Update(customer);
-            await _db.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
         public async Task<List<Account>> GetAccountsByCustomerIdAsync(int customerId)
@@ -47,16 +49,26 @@ namespace BankSystem.Infrastructure.Repositories
                                      .ToListAsync();
         }
 
-        public async Task UpdateAccountsAsync(List<Account> accounts)
+        public Task UpdateAccountsAsync(List<Account> accounts)
         {
             _db.Accounts.UpdateRange(accounts);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateCustomerAsync(Customer customer)
+        {
+            _db.Customers.Update(customer);
+            return Task.CompletedTask;
+        }
+
+        public async Task SaveChangesAsync()
+        {
             await _db.SaveChangesAsync();
         }
 
-        public async Task UpdateCustomerAsync(Customer customer)
+        public async Task<bool> ExistsByCustomerNumberAsync(string customerNumber)
         {
-            _db.Customers.Update(customer);
-            await _db.SaveChangesAsync();
+            return await _db.Customers.AnyAsync(c => c.CustomerNumber == customerNumber);
         }
     }
 }

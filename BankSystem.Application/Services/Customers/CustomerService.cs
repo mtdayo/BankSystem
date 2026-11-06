@@ -96,6 +96,8 @@ namespace BankSystem.Application.Services.Customers
 
             await _repository.UpdateAsync(customer);
 
+            await _repository.SaveChangesAsync();
+
             return new CustomerDto
             {
                 CustomerId = customer.CustomerId,
@@ -107,6 +109,39 @@ namespace BankSystem.Application.Services.Customers
                 Email = customer.Email,
                 CreatedAt = customer.CreatedAt
             };
+        }
+
+        public async Task<bool> DeleteAsync(int customerId)
+        {
+            //顧客を取得
+            var customer = await _repository.GetByIdAsync(customerId);
+
+            if (customer is null) return false;
+
+            //既に削除済みなら処理しない
+            if (customer.IsDeleted) return false;
+
+            //顧客を論理削除
+            customer.Delete();
+
+            //顧客に紐づく口座を取得
+            var accounts = await _repository.GetAccountsByCustomerIdAsync(customerId);
+
+            //口座を解約状態に変更
+            foreach (var account in accounts)
+            {
+                if (account.Status != 3) account.close();
+            }
+
+            //口座情報を更新
+            await _repository.UpdateAccountsAsync(accounts);
+
+            //顧客情報を更新
+            await _repository.UpdateCustomerAsync(customer);
+
+            await _repository.SaveChangesAsync();
+
+            return true;
         }
 
     }

@@ -58,5 +58,18 @@ namespace BankSystem.WebApi.Controllers
             return Ok(customer);
         }
 
+        [HttpDelete("{customerId:int}")]
+        public async Task<IActionResult> Delete(int customerId)
+        {
+            var result = await _customerService.DeleteAsync(customerId);
+
+            if(!result)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
     }
 }

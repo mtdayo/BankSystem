@@ -1,0 +1,6 @@
+@BankSystem.WebApi_HostAddress = http://localhost:5041
+
+GET {{BankSystem.WebApi_HostAddress}}/CustomersController/
+Accept: application/json
+
+###

@@ -56,6 +56,12 @@ namespace BankSystem.Application.Services.Customers
 
         public async Task<CustomerDto> CreateAsync(CustomerCreateRequest request)
         {
+            //顧客番号重複チェック
+            if (await _repository.ExistsByCustomerNumberAsync(request.CustomerNumber))
+            {
+                throw new InvalidOperationException("顧客番号が重複しています。");
+            }
+
             var customer = new Customer(
                 request.CustomerNumber,
                 request.Name,

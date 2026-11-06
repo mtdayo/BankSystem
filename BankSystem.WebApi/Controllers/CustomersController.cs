@@ -38,14 +38,22 @@ namespace BankSystem.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CustomerCreateRequest request)
         {
-            var customer = await _customerService.CreateAsync(request);
+            try
+            {
+                var customer = await _customerService.CreateAsync(request);
 
-            return CreatedAtAction(
-                nameof(GetById),
-                new { customerId = customer.CustomerId },
-                customer
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { customerId = customer.CustomerId },
+                    customer
 
-            );
+                );
+            }
+            catch (InvalidOperationException ex)
+            {
+
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{customerId:int}")]
